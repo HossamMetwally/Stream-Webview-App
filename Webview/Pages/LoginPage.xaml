@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Webview.LoginPage"
+             Title="Sign in"
+             Shell.FlyoutBehavior="Disabled">
+
+    <Grid Padding="24">
+        <ScrollView>
+            <VerticalStackLayout Spacing="14"
+                                 HorizontalOptions="FillAndExpand">
+
+                <Label Text="Stream Login"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       Margin="0,8,0,12" />
+
+                <!-- Server -->
+                <Label Text="Server*" Margin="2,0,2,0" />
+                <Entry x:Name="ServerEntry"
+                       Keyboard="Url"
+                       Text="http://74.243.216.77:49110/"
+                       HorizontalOptions="FillAndExpand"
+                       Margin="0,0,0,10" />
+
+                <!-- Username -->
+                <Label Text="Username*" Margin="2,0,2,0" />
+                <Entry x:Name="UserEntry"
+                       Text="ADMIN"
+                       HorizontalOptions="FillAndExpand"
+                       Margin="0,0,0,10" />
+
+                <!-- Password -->
+                <Label Text="Password*" Margin="2,0,2,0" />
+                <Entry x:Name="PassEntry"
+                       Text="admin"
+                       IsPassword="True"
+                       HorizontalOptions="FillAndExpand"
+                       Margin="0,0,0,16" />
+
+                <Button Text="SIGN IN"
+                        Clicked="OnLoginClicked"
+                        HeightRequest="48"
+                        HorizontalOptions="FillAndExpand" />
+
+                <Label x:Name="StatusLabel"
+                       TextColor="#666"
+                       HorizontalTextAlignment="Center"
+                       Margin="0,8,0,0" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

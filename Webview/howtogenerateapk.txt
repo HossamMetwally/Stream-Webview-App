@@ -1,0 +1,13 @@
+cd /d D:\Webview\Webview
+
+
+dotnet publish -f net10.0-android -c Release ^
+  /p:AndroidPackageFormat=apk ^
+  /p:AndroidKeyStore=true ^
+  /p:AndroidSigningKeyStore="D:\Webview\Webview\proj key\streamcontrols.keystore" ^
+  /p:AndroidSigningStorePass="streamcontrols" ^
+  /p:AndroidSigningKeyAlias="streamcontrols" ^
+  /p:AndroidSigningKeyPass="streamcontrols"
+
+
+D:\Webview\Webview\bin\Release\net10.0-android\publish\

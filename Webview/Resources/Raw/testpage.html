@@ -1,0 +1,16 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>MAUI WebView Test</title>
+</head>
+<body style="font-family:sans-serif;text-align:center;margin-top:50px;">
+    <h2>Hello from WebView 👋</h2>
+    <p>If you see this, local HTML loaded successfully.</p>
+
+    <script>
+        window.app = window.app || {};
+        window.app.receive = (msg) => alert('received: ' + JSON.stringify(msg));
+    </script>
+</body>
+</html>

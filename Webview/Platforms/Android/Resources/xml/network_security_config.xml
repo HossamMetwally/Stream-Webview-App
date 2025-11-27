@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+	<!-- Allow http to your backend -->
+	<domain-config cleartextTrafficPermitted="true">
+		<domain includeSubdomains="true">74.243.216.77</domain>
+	</domain-config>
+
+	<!--  allow localhost during dev -->
+	<domain-config cleartextTrafficPermitted="true">
+		<domain includeSubdomains="true">localhost</domain>
+		<domain includeSubdomains="true">10.0.2.2</domain>
+	</domain-config>
+</network-security-config>

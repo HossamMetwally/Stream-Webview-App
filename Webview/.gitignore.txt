@@ -1,0 +1,18 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.userosscache
+*.suo
+
+# Logs / temp
+*.log
+
+# Android signing keys and built packages (DO NOT PUSH THESE)
+proj key/*.keystore
+proj key/*.jks
+proj key/*.aab
+proj key/*.apk

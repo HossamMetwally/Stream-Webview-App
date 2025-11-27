@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Webview.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- Colors -->
+            <Color x:Key="PageBackground">#FFFFFF</Color>
+            <Color x:Key="TextPrimary">#111111</Color>
+            <Color x:Key="PrimaryBlue">#4F46E5</Color>
+            <Color x:Key="FieldBorder">#DDDDDD</Color>
+            <Color x:Key="Placeholder">#666666</Color>
+
+            <!-- Page defaults -->
+            <Style TargetType="ContentPage">
+                <Setter Property="BackgroundColor" Value="{StaticResource PageBackground}" />
+            </Style>
+
+            <!-- Text defaults -->
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+            </Style>
+
+            <!-- Entry defaults (Material look) -->
+            <Style TargetType="Entry">
+                <Setter Property="Visual" Value="Material" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="PlaceholderColor" Value="{StaticResource Placeholder}" />
+                <Setter Property="HeightRequest" Value="46" />
+            </Style>
+
+            <!-- Button defaults -->
+            <Style TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBlue}" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="HeightRequest" Value="48" />
+                <Setter Property="FontAttributes" Value="Bold" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
