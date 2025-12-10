@@ -18,6 +18,9 @@ namespace Webview
 
             builder.Services.AddSingleton<ApiClient>();
 
+            // 🔐 NEW: auth + biometrics services
+            builder.Services.AddSingleton<AuthStorageService>();
+            builder.Services.AddSingleton<IBiometricService, BiometricService>();
 
 #if DEBUG
             builder.Logging.AddDebug();

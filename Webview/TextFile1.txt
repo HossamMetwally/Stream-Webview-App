@@ -1,85 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Webview.SingleWebView"
-             Title="Dashboards">
-
-    <!-- Two rows: 
-         Row 0 = WebView + loading overlay
-         Row 1 = bottom menu -->
-    <Grid RowDefinitions="*,Auto">
-
-        <!-- MAIN CONTENT (WebView + loader) -->
-        <Grid Grid.Row="0">
-            <!-- WebView is under the loader -->
-            <WebView x:Name="DashboardView"
-                     IsVisible="False"
-                     HorizontalOptions="FillAndExpand"
-                     VerticalOptions="FillAndExpand" />
-
-            <!-- Simple full-screen loading overlay -->
-            <Grid x:Name="LoadingOverlay"
-                  BackgroundColor="#F5F5F5"
-                  Opacity="1">
-                <VerticalStackLayout
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center"
-                    Spacing="12">
-                    <ActivityIndicator IsRunning="True"
-                                       WidthRequest="40"
-                                       HeightRequest="40" />
-                    <Label Text="Loading dashboard…"
-                           FontSize="16"
-                           HorizontalTextAlignment="Center" />
-                </VerticalStackLayout>
-            </Grid>
-        </Grid>
-
-
-        <!-- OFFLINE / ERROR OVERLAY -->
-        <Grid x:Name="OfflineOverlay"
-          BackgroundColor="#F5F5F5"
-          IsVisible="False">
-            <VerticalStackLayout
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            Spacing="12">
-
-                <Label Text="Couldn’t load dashboard"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   HorizontalTextAlignment="Center" />
-
-                <Label x:Name="OfflineMessageLabel"
-                   Text="Please check your internet connection and try again."
-                   FontSize="14"
-                   HorizontalTextAlignment="Center" />
-
-                <Button Text="Retry"
-                    Clicked="OnRetryClicked"
-                    WidthRequest="140" />
-
-            </VerticalStackLayout>
-        </Grid>
-
-
-        <!-- BOTTOM NAV BAR -->
-        <!-- BOTTOM NAV BAR -->
-        <Grid Grid.Row="1"
+﻿        <Grid Grid.Row="1"
       BackgroundColor="White"
       HorizontalOptions="FillAndExpand"
       VerticalOptions="End">
 
             <!-- 2 rows:
          Row 0 = 3px indicators (touch top of bar)
-         Row 1 = icons + labels (+ center FAB) -->
+         Row 1 = icons + labels -->
             <Grid RowDefinitions="3,Auto"
-          ColumnDefinitions="*,*,Auto,*,*"
+          ColumnDefinitions="*,*,*,*,*"
           Padding="24,0,24,8"
           HorizontalOptions="FillAndExpand"
           VerticalOptions="FillAndExpand">
 
-                <!-- ROW 0: INDICATORS (no indicator for center Reload) -->
+                <!-- ROW 0: INDICATORS -->
                 <BoxView x:Name="HomeIndicator"
                  Grid.Row="0" Grid.Column="0"
                  BackgroundColor="#6200EE"
@@ -88,7 +21,7 @@
                  VerticalOptions="Fill"
                  IsVisible="False" />
 
-                <BoxView x:Name="AboutIndicator"
+                <BoxView x:Name="ReloadIndicator"
                  Grid.Row="0" Grid.Column="1"
                  BackgroundColor="#6200EE"
                  WidthRequest="32"
@@ -96,8 +29,8 @@
                  VerticalOptions="Fill"
                  IsVisible="False" />
 
-                <BoxView x:Name="SettingsIndicator"
-                 Grid.Row="0" Grid.Column="3"
+                <BoxView x:Name="AboutIndicator"
+                 Grid.Row="0" Grid.Column="2"
                  BackgroundColor="#6200EE"
                  WidthRequest="32"
                  HorizontalOptions="Center"
@@ -105,6 +38,14 @@
                  IsVisible="False" />
 
                 <BoxView x:Name="LogoutIndicator"
+                 Grid.Row="0" Grid.Column="3"
+                 BackgroundColor="#6200EE"
+                 WidthRequest="32"
+                 HorizontalOptions="Center"
+                 VerticalOptions="Fill"
+                 IsVisible="False" />
+
+                <BoxView x:Name="SettingsIndicator"
                  Grid.Row="0" Grid.Column="4"
                  BackgroundColor="#6200EE"
                  WidthRequest="32"
@@ -113,9 +54,9 @@
                  IsVisible="False" />
 
 
-                <!-- ROW 1: SIDE TABS + CENTER FAB -->
+                <!-- ROW 1: ICONS + LABELS -->
 
-                <!-- HOME (left 1) -->
+                <!-- HOME -->
                 <VerticalStackLayout Grid.Row="1" Grid.Column="0"
                              Spacing="4"
                              HorizontalOptions="Center"
@@ -136,8 +77,29 @@
                     </VerticalStackLayout.GestureRecognizers>
                 </VerticalStackLayout>
 
-                <!-- ABOUT (left 2) -->
+                <!-- RELOAD -->
                 <VerticalStackLayout Grid.Row="1" Grid.Column="1"
+                             Spacing="4"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center">
+                    <Image x:Name="ReloadIcon"
+                   Source="icon_reload.png"
+                   HeightRequest="22"
+                   WidthRequest="22"
+                   Margin="0,4,0,0"
+                   HorizontalOptions="Center" />
+                    <Label x:Name="ReloadLabel"
+                   Text="Reload"
+                   FontSize="12"
+                   TextColor="#9CA3AF"
+                   HorizontalOptions="Center" />
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnReloadTabTapped" />
+                    </VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+
+                <!-- ABOUT -->
+                <VerticalStackLayout Grid.Row="1" Grid.Column="2"
                              Spacing="4"
                              HorizontalOptions="Center"
                              VerticalOptions="Center">
@@ -153,55 +115,12 @@
                    TextColor="#9CA3AF"
                    HorizontalOptions="Center" />
                     <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnAboutTabTapped" />
+                        <TapGestureRecognizer Tapped="OnAboutClicked" />
                     </VerticalStackLayout.GestureRecognizers>
                 </VerticalStackLayout>
 
-                <!-- CENTER FAB: RELOAD -->
-                <Frame Grid.Row="1" Grid.Column="2"
-               HeightRequest="56"
-               WidthRequest="56"
-               CornerRadius="28"
-               HasShadow="True"
-               Padding="0"
-               Margin="0,-20,0,4"
-               BackgroundColor="#6200EE"
-               VerticalOptions="Start"
-               HorizontalOptions="Center">
-                    <Image Source="icon_reload.png"
-                   HeightRequest="24"
-                   WidthRequest="24"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnReloadTabTapped" />
-                        </Image.GestureRecognizers>
-                    </Image>
-                </Frame>
-
-                <!-- SETTINGS (right 1) -->
+                <!-- LOGOUT -->
                 <VerticalStackLayout Grid.Row="1" Grid.Column="3"
-                             Spacing="4"
-                             HorizontalOptions="Center"
-                             VerticalOptions="Center">
-                    <Image x:Name="SettingsIcon"
-                   Source="icon_settings.png"
-                   HeightRequest="22"
-                   WidthRequest="22"
-                   Margin="0,4,0,0"
-                   HorizontalOptions="Center" />
-                    <Label x:Name="SettingsLabel"
-                   Text="Settings"
-                   FontSize="12"
-                   TextColor="#9CA3AF"
-                   HorizontalOptions="Center" />
-                    <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnSettingsTabTapped" />
-                    </VerticalStackLayout.GestureRecognizers>
-                </VerticalStackLayout>
-
-                <!-- LOGOUT (right 2) -->
-                <VerticalStackLayout Grid.Row="1" Grid.Column="4"
                              Spacing="4"
                              HorizontalOptions="Center"
                              VerticalOptions="Center">
@@ -221,9 +140,26 @@
                     </VerticalStackLayout.GestureRecognizers>
                 </VerticalStackLayout>
 
+                <!-- SETTINGS (new) -->
+                <VerticalStackLayout Grid.Row="1" Grid.Column="4"
+                             Spacing="4"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center">
+                    <Image x:Name="SettingsIcon"
+                   Source="icon_settings.png"
+                   HeightRequest="22"
+                   WidthRequest="22"
+                   Margin="0,4,0,0"
+                   HorizontalOptions="Center" />
+                    <Label x:Name="SettingsLabel"
+                   Text="Settings"
+                   FontSize="12"
+                   TextColor="#9CA3AF"
+                   HorizontalOptions="Center" />
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSettingsTabTapped" />
+                    </VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+
             </Grid>
         </Grid>
-
-    </Grid>
-
-</ContentPage>

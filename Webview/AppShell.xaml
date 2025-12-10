@@ -105,87 +105,17 @@
     </Shell.FlyoutContent>
 
 
-    <!--<Shell.FlyoutContent>
-        <Grid Padding="0" RowDefinitions="Auto,*">
-            <Label Text="Dashboards"
-                   FontSize="24"
-                   FontAttributes="Bold"
-                   Padding="16,12" />
-
-            <CollectionView x:Name="DashboardsList"
-                            Grid.Row="1"
-                            SelectionMode="None">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout Spacing="0">
-                            --><!-- Parent item: Overview / Map / Factories / Utility -->
-                            <!-- PARENT ROW: icon + label + arrow --><!--
-                            <Grid Padding="16,8"
-                                  ColumnDefinitions="Auto,*,Auto">
-                                --><!-- placeholder icon (same for all for now) --><!--
-                                <Label Text="⬛"
-                                       FontSize="20"
-                                       VerticalOptions="Center"
-                                       Margin="0,0,8,0" />
-
-                                <Label Grid.Column="1"
-                                       Text="{Binding Name}"
-                                       FontSize="20"
-                                       VerticalOptions="Center">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="OnParentTapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
-
-                                --><!-- static arrow shown only if there are children --><!--
-                                <Label Grid.Column="2"
-                                       Text="▾"
-                                       FontSize="16"
-                                       VerticalOptions="Center"
-                                       IsVisible="{Binding HasChildren}">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="OnParentTapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
-                            </Grid>
-
-                            --><!-- Children: e.g. Factory-1..Factory-9 under Factories --><!--
-                            <VerticalStackLayout Margin="32,0,0,0"
-                                                    IsVisible="{Binding IsExpanded}"
-                                                    BindableLayout.ItemsSource="{Binding Children}">
-                                <BindableLayout.ItemTemplate>
-                                    <DataTemplate>
-                                        <Label Text="{Binding Name}"
-                                               Padding="8,4"
-                                               FontSize="18">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Tapped="OnChildTapped" />
-                                            </Label.GestureRecognizers>
-                                        </Label>
-                                    </DataTemplate>
-                                </BindableLayout.ItemTemplate>
-                            </VerticalStackLayout>
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            --><!-- Footer: Sign out --><!--
-            <Grid Grid.Row="2"
-                  Padding="16,8">
-                <Button Text="Sign out"
-                        FontSize="14"
-                        HorizontalOptions="Fill"
-                        Clicked="OnSignOutClicked" />
-            </Grid>
-        </Grid>
-    </Shell.FlyoutContent>-->
 
     <!-- FIRST page = startup page (Login) -->
     <ShellContent
         Route="LoginPage"
         ContentTemplate="{DataTemplate local:LoginPage}" />
 
+    <!-- Unlock screen for biometrics -->
+    <ShellContent
+    Route="UnlockPage"
+    ContentTemplate="{DataTemplate local:UnlockPage}" />
+    
     <!-- WebView host -->
     <ShellContent
         Title="Dashboards"

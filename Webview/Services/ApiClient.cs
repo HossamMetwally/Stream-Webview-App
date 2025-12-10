@@ -17,25 +17,60 @@ public sealed class ApiClient
 
     private HttpClient CreateClient(string? token = null)
     {
-        var http = new HttpClient { BaseAddress = new Uri(BaseUrl) };
+        var http = new HttpClient
+        {
+            BaseAddress = new Uri(BaseUrl),
+            Timeout = TimeSpan.FromSeconds(15) // <= SHORTER TIMEOUT
+        };
+
         if (!string.IsNullOrWhiteSpace(token))
         {
             http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
         }
+
         return http;
     }
 
+
     // --- Authenticate ---
+
     public async Task<string> AuthenticateAsync(string user, string pass, CancellationToken ct = default)
     {
-        var http = CreateClient();
+        using var http = CreateClient(); // dispose client after call
+
         var body = new { UserName = user, UserPassword = pass };
         using var content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
 
-        using var res = await http.PostAsync("api/Authenticate", content, ct);
-        //using var res = await http.PostAsync("Dashboard/Authenticate", content, ct);
+        HttpResponseMessage res;
 
-        res.EnsureSuccessStatusCode();
+        try
+        {
+            res = await http.PostAsync("api/Authenticate", content, ct);
+        }
+        catch (HttpRequestException ex)
+        {
+            // No route to host / connection refused / DNS issue, etc.
+            throw new HttpRequestException(
+                "Cannot reach the server. Please make sure it is running and the address is correct.",
+                ex);
+        }
+        catch (TaskCanceledException ex) when (!ct.IsCancellationRequested)
+        {
+            // Hit our 10s HttpClient timeout
+            throw new TaskCanceledException("Login request timed out. Please try again.", ex);
+        }
+
+        // Non-success HTTP status codes (401, 500, etc.)
+        if (!res.IsSuccessStatusCode)
+        {
+            if (res.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new InvalidOperationException("Invalid username or password.");
+            }
+
+            throw new HttpRequestException(
+                $"Server error ({(int)res.StatusCode}). Please try again later.");
+        }
 
         var payload = await res.Content.ReadAsStringAsync(ct);
 
@@ -46,7 +81,6 @@ public sealed class ApiClient
                    ?? throw new FormatException("Invalid auth response.");
 
         // Token may be null (your web example), so don't throw here.
-        // We still store it if present for the cookie.
         if (!string.IsNullOrWhiteSpace(auth.Token))
         {
             await SecureStorage.SetAsync("auth_token", auth.Token);
@@ -57,10 +91,43 @@ public sealed class ApiClient
         return auth.Token ?? string.Empty;
     }
 
+    //public async Task<string> AuthenticateAsync(string user, string pass, CancellationToken ct = default)
+    //{
+    //    using var http = CreateClient();
+    //    var body = new { UserName = user, UserPassword = pass };
+    //    using var content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+
+    //    using var res = await http.PostAsync("api/Authenticate", content, ct);
+    //    //using var res = await http.PostAsync("Dashboard/Authenticate", content, ct);
+
+    //    res.EnsureSuccessStatusCode();
+
+    //    var payload = await res.Content.ReadAsStringAsync(ct);
+
+    //    // Save raw JSON exactly as web login receives it
+    //    await SecureStorage.SetAsync("auth_payload_raw", payload);
+
+    //    var auth = JsonSerializer.Deserialize<AuthResponse>(payload, _json)
+    //               ?? throw new FormatException("Invalid auth response.");
+
+    //    // Token may be null (your web example), so don't throw here.
+    //    // We still store it if present for the cookie.
+    //    if (!string.IsNullOrWhiteSpace(auth.Token))
+    //    {
+    //        await SecureStorage.SetAsync("auth_token", auth.Token);
+    //        Preferences.Set("auth_token", auth.Token);
+    //    }
+
+    //    // Return token anyway (may be null/empty)
+    //    return auth.Token ?? string.Empty;
+    //}
+
 
 
 
     // --- DASHBOARD TREE (parents + children from Dict) ---
+
+
     public async Task<List<ViewNode>> GetViewsTreeAsync(string token, CancellationToken ct = default)
     {
         var http = CreateClient(token);
@@ -338,16 +405,3 @@ public sealed class ViewNode : INotifyPropertyChanged
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
-
-//public sealed class ViewNode
-//{
-//    public string? Id { get; set; }
-//    public string? Name { get; set; }
-//    public string? Url { get; set; }      // non-null on leaves
-//    public string? Raw { get; set; }
-
-//    public List<ViewNode> Children { get; set; } = new();
-//    public bool HasChildren => Children.Count > 0;
-//    public bool IsExpanded { get; set; } = false;
-
-//}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Webview.UnlockPage"
+             Title="Unlock App">
+
+    <VerticalStackLayout Padding="32"
+                     Spacing="16"
+                     VerticalOptions="Center"
+                     HorizontalOptions="Center">
+
+        <Label Text="🔒"
+           FontSize="48"
+           HorizontalOptions="Center" />
+
+        <Label Text="Welcome back"
+           FontSize="22"
+           FontAttributes="Bold"
+           HorizontalOptions="Center" />
+
+        <Label x:Name="SubtitleLabel"
+           FontSize="14"
+           HorizontalOptions="Center"
+           Opacity="0.7" />
+
+        <Button x:Name="UnlockButton"
+            Text="Unlock"
+            WidthRequest="220"
+            Clicked="OnUnlockClicked" />
+
+        <Button Text="Use password instead"
+            Clicked="OnUsePasswordClicked"
+            FontSize="13"
+            BackgroundColor="Transparent"
+            TextColor="Gray"
+            WidthRequest="220" />
+    </VerticalStackLayout>
+
+</ContentPage>

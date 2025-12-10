@@ -4,6 +4,7 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using Webview.Services;
 using System.Linq;
+using Webview.Pages;
 
 
 namespace Webview;
@@ -14,17 +15,40 @@ public partial class AppShell : Shell
     private List<ViewNode> _views = new();
     private bool _dashboardsLoaded;
 
+    private const string ThemePreferenceKey = "app_theme";
+
+
 
     public AppShell()
     {
         InitializeComponent();
+
+        // Apply saved theme
+        ApplySavedTheme();
+
+
         Application.Current.UserAppTheme = AppTheme.Light;
 
-        // optional, but fine to keep
         Routing.RegisterRoute("LoginPage", typeof(LoginPage));
         Routing.RegisterRoute("SingleWebView", typeof(SingleWebView));
+        Routing.RegisterRoute("AboutPage", typeof(AboutPage));
+        Routing.RegisterRoute("SettingsPage", typeof(SettingsPage));
+
 
         Loaded += AppShell_Loaded;
+    }
+
+    private void ApplySavedTheme()
+    {
+        var choice = Preferences.Get(ThemePreferenceKey, "Light");
+        var theme = choice switch
+        {
+            "Dark" => AppTheme.Dark,
+            "System" => AppTheme.Unspecified,
+            _ => AppTheme.Light
+        };
+
+        Application.Current.UserAppTheme = theme;
     }
 
     protected override async void OnAppearing()
